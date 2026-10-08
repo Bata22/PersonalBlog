@@ -34,8 +34,7 @@ async function EditBranch({ params }: Pick<PageProps<'/admin/grane/[id]'>, 'para
   const own = new Set(flattenTree([node]).map((n) => n.id))
   const parents = flattenTree(tree)
     .filter((n) => !own.has(n.id))
-    .map((n) => ({ id: n.id, label: branchPath(n) }))
-
+    .map((n) => ({ id: n.id, label: branchPath(n), attribute: n.attributeResolved }))
   return (
     <div className="grid gap-6">
       <PageHeader

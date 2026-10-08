@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Field, Input, Select, Textarea } from '@/components/ui/controls'
 import { FormMessage } from '@/components/ui/misc'
 import { NumberInput } from '@/components/ui/number-input'
-import { ATTRIBUTE_IDS, ATTRIBUTES } from '@/config/attributes'
+import { ATTRIBUTE_IDS, ATTRIBUTES, type AttributeId } from '@/config/attributes'
 import { BRANCH_KINDS, ENTRY_KINDS } from '@/config/entry-kinds'
 import { t } from '@/i18n/sr'
 import { deleteBranch, saveBranch, type BranchInput } from '../actions'
@@ -17,7 +17,7 @@ const ICON_IDEAS = ['🌱', '🎓', '🛠️', '📚', '🎵', '💪', '⛰️',
 type Props = {
   initial: BranchInput
   /** Moguće roditeljske grane (bez ove grane i njenih podgrana). */
-  parents: { id: string; label: string }[]
+    parents: { id: string; label: string; attribute: AttributeId | null }[]
   /** Posebne grane (dnevnik, biblioteka) ne menjaju vrstu upisa. */
   special?: boolean
 }
@@ -31,6 +31,14 @@ export function BranchForm({ initial, parents, special }: Props) {
   const [message, setMessage] = useState<{ tone: 'error' | 'success'; text: string } | null>(null)
   const set = (patch: Partial<BranchInput>) => setValues((v) => ({ ...v, ...patch }))
   const isEdit = Boolean(values.id)
+  
+  // Prazan atribut: podgrana preuzima atribut roditelja, glavna grana ga nema.
+  const parent = parents.find((p) => p.id === values.parentId)
+  const inheritLabel = !parent
+    ? t.branches.noAttribute
+    : parent.attribute
+      ? t.branches.inheritAttribute(ATTRIBUTES[parent.attribute].label)
+      : t.branches.inheritNone
 
   function submit(event: React.FormEvent) {
     event.preventDefault()
@@ -112,7 +120,7 @@ export function BranchForm({ initial, parents, special }: Props) {
             value={values.attribute ?? ''}
             onChange={(e) => set({ attribute: (e.target.value || null) as BranchInput['attribute'] })}
           >
-            <option value="">{t.branches.inheritAttribute}</option>
+            <option value="">{inheritLabel}</option>
             {ATTRIBUTE_IDS.map((attr) => (
               <option key={attr} value={attr}>
                 {ATTRIBUTES[attr].icon} {ATTRIBUTES[attr].label}

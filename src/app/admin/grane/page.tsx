@@ -39,7 +39,7 @@ async function Branches() {
           <summary className="cursor-pointer font-display text-xl font-bold">{t.branches.newBranch}</summary>
           <div className="mt-5">
             <BranchForm
-              parents={flattenTree(tree).map((n) => ({ id: n.id, label: branchPath(n) }))}
+              parents={flattenTree(tree).map((n) => ({ id: n.id, label: branchPath(n), attribute: n.attributeResolved }))}
               initial={{
                 name: '',
                 icon: '🌱',

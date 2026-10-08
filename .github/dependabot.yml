@@ -1,0 +1,28 @@
+# Jednom nedeljno proverava nove verzije paketa i GitHub Actions-a i otvara PR.
+# CI na svakom takvom PR-u pokaže da li sve i dalje radi pre nego što ga spojiš.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Europe/Belgrade
+    open-pull-requests-limit: 5
+    groups:
+      next-react:
+        patterns: ['next', 'eslint-config-next', 'react', 'react-dom', '@types/react*']
+      tiptap:
+        patterns: ['@tiptap/*']
+      supabase:
+        patterns: ['@supabase/*']
+      dev-alati:
+        dependency-type: development
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Europe/Belgrade

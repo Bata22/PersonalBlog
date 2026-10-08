@@ -1,0 +1,231 @@
+@import 'tailwindcss';
+@import '../styles/palettes.css';
+
+/* Tailwind klase (bg-paper, text-ink, bg-accent...) vezane za promenljive palete. */
+@theme inline {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-ink: var(--accent-ink);
+  --color-leaf: var(--leaf);
+  --color-leaf-soft: var(--leaf-soft);
+  --color-bark: var(--bark);
+  --color-unripe: var(--unripe);
+  --color-ripe: var(--ripe);
+  --color-private: var(--private);
+  --color-private-soft: var(--private-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-btn: var(--btn-bg);
+  --color-btn-ink: var(--btn-fg);
+
+  --font-sans: var(--font-onest), var(--font-onest-ext), ui-sans-serif, system-ui, sans-serif;
+  --font-display:
+    var(--font-bricolage), var(--font-bricolage-ext), var(--font-onest), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-soft: 0 1px 2px rgb(var(--shadow-rgb) / 0.06), 0 12px 28px -16px rgb(var(--shadow-rgb) / 0.28);
+}
+
+@layer base {
+  html {
+    background-color: var(--paper);
+    color: var(--ink);
+    -webkit-text-size-adjust: 100%;
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    font-feature-settings: 'kern';
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    line-height: 1.12;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  p,
+  li {
+    text-wrap: pretty;
+  }
+
+  /* Dugačak link ili reč ne sme da gura stranicu u stranu: stavke mreže
+     smeju da budu uže od svog sadržaja, a predugačke reči se prelamaju. */
+  :where(.grid) > * {
+    min-width: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  li,
+  dd {
+    overflow-wrap: break-word;
+  }
+
+  :focus-visible {
+    outline: 2.5px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+}
+
+@layer components {
+  /* Tačkasti papir iz beležnice — samo iza stabla. */
+  .dot-paper {
+    background-image: radial-gradient(circle at 1px 1px, var(--line-strong) 1px, transparent 0);
+    background-size: 20px 20px;
+  }
+
+  /* Traka iskustva: boja ide od zelenog do zrelog limuna. */
+  .xp-fill {
+    background: linear-gradient(90deg, var(--unripe), var(--ripe));
+  }
+
+  /* Tekst upisa — isti stil u editoru i na objavljenoj stranici. */
+  .prose-dnevnik {
+    font-size: 1.0625rem;
+    line-height: 1.72;
+    overflow-wrap: anywhere;
+  }
+  .prose-dnevnik > * + * {
+    margin-top: 1em;
+  }
+  .prose-dnevnik h2 {
+    font-size: 1.5rem;
+    font-weight: 750;
+    margin-top: 1.7em;
+  }
+  .prose-dnevnik h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: 1.4em;
+  }
+  .prose-dnevnik a {
+    color: var(--leaf);
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+  }
+  .prose-dnevnik ul {
+    list-style: disc;
+    padding-left: 1.35em;
+  }
+  .prose-dnevnik ol {
+    list-style: decimal;
+    padding-left: 1.5em;
+  }
+  .prose-dnevnik li + li {
+    margin-top: 0.3em;
+  }
+  .prose-dnevnik li > p + p {
+    margin-top: 0.4em;
+  }
+  .prose-dnevnik blockquote {
+    border-left: 3px solid var(--accent-strong);
+    padding-left: 1em;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .prose-dnevnik code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.88em;
+    background: var(--sunken);
+    padding: 0.1em 0.35em;
+    border-radius: 6px;
+  }
+  .prose-dnevnik pre {
+    background: var(--sunken);
+    padding: 1rem 1.1rem;
+    border-radius: 14px;
+    overflow-x: auto;
+    line-height: 1.55;
+  }
+  .prose-dnevnik pre code {
+    background: none;
+    padding: 0;
+  }
+  .prose-dnevnik hr {
+    border: 0;
+    border-top: 1.5px dashed var(--line-strong);
+    margin: 2.2em 0;
+  }
+  .prose-dnevnik img {
+    border-radius: 14px;
+    width: 100%;
+    height: auto;
+  }
+  .prose-dnevnik figcaption {
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+    margin-top: 0.5em;
+  }
+
+  /* Tiptap editor */
+  .prose-dnevnik.ProseMirror {
+    outline: none;
+    min-height: 9rem;
+  }
+  .ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    color: var(--ink-faint);
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+  .ProseMirror img.ProseMirror-selectednode {
+    outline: 3px solid var(--accent-strong);
+  }
+
+  /* Jedini orkestrirani pokret: limunovi na stablu "sazrevaju" pri učitavanju. */
+  .fruit {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: fruit-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation-delay: calc(var(--i, 0) * 70ms + 150ms);
+  }
+}
+
+@keyframes fruit-pop {
+  from {
+    transform: scale(0.35);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fruit {
+    animation: none;
+  }
+}

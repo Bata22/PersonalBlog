@@ -1,0 +1,45 @@
+# Provera na svaki push i pull request: ranjivosti, lint, tipovi, testovi i build.
+# Ne treba nijedan tajni ključ — build radi i bez Supabase podešavanja.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  provera:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalacija (tačno po package-lock.json)
+        run: npm ci
+
+      - name: Ranjivosti u paketima
+        run: npm audit --audit-level=moderate
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tipovi
+        run: npm run typecheck
+
+      - name: Testovi
+        run: npm test
+
+      - name: Build
+        run: npm run build

@@ -1,0 +1,182 @@
+/*
+ * Palete boja. Svaka paleta = jedan blok promenljivih za svetli i jedan za
+ * tamni režim (prati podešavanje telefona). Komponente koriste samo ove
+ * promenljive, pa nova paleta ne traži nikakvu izmenu u kodu komponenti.
+ *
+ * Nova paleta: kopiraj blok "limun" (oba dela), promeni ime i boje, pa
+ * je dodaj u src/config/theme.ts.
+ *
+ * Značenje boja:
+ *   accent  — limun, glavni naglasak
+ *   leaf    — linkovi i aktivni elementi (dovoljan kontrast za tekst)
+ *   unripe → ripe — boja limuna na stablu, od niskog do visokog nivoa
+ *   private — sve što je "samo za mene"
+ */
+
+:root {
+  color-scheme: light dark;
+}
+
+[data-palette='limun'] {
+  --paper: #f8fae6;
+  --surface: #fefff7;
+  --sunken: #eff3d2;
+  --line: #dde3b6;
+  --line-strong: #c3cb92;
+  --ink: #2a3318;
+  --ink-soft: #5d6648;
+  --ink-faint: #6a7350;
+  --accent: #eef28a;
+  --accent-strong: #e2e85c;
+  --accent-ink: #2a3318;
+  --leaf: #4f7a26;
+  --leaf-soft: #d6e9a6;
+  --bark: #8b7d55;
+  --unripe: #9cc75a;
+  --ripe: #f0d64a;
+  --private: #6a5a9c;
+  --private-soft: #ebe6f7;
+  --danger: #a63d24;
+  --danger-soft: #f8e1d8;
+  --btn-bg: #2a3318;
+  --btn-fg: #eef28a;
+  --focus: #4f7a26;
+  --shadow-rgb: 42 51 24;
+}
+
+[data-palette='mint'] {
+  --paper: #f1faf6;
+  --surface: #fbfffd;
+  --sunken: #e2f3eb;
+  --line: #c9e6d8;
+  --line-strong: #9fcdb6;
+  --ink: #17332a;
+  --ink-soft: #4b6b5f;
+  --ink-faint: #5a776b;
+  --accent: #bdf0d8;
+  --accent-strong: #93e3bd;
+  --accent-ink: #17332a;
+  --leaf: #2d7457;
+  --leaf-soft: #cdeedd;
+  --bark: #7c8a6a;
+  --unripe: #8cc98f;
+  --ripe: #e9d24a;
+  --private: #5f5aa6;
+  --private-soft: #e8e7f8;
+  --danger: #a63d24;
+  --danger-soft: #f8e1d8;
+  --btn-bg: #17332a;
+  --btn-fg: #bdf0d8;
+  --focus: #2d7457;
+  --shadow-rgb: 23 51 42;
+}
+
+[data-palette='breskva'] {
+  --paper: #fff7f1;
+  --surface: #fffdfb;
+  --sunken: #fbe9dd;
+  --line: #f1d6c4;
+  --line-strong: #e2b59a;
+  --ink: #3a2218;
+  --ink-soft: #6e4c3e;
+  --ink-faint: #7a5647;
+  --accent: #ffd8bf;
+  --accent-strong: #ffc29c;
+  --accent-ink: #3a2218;
+  --leaf: #a0482a;
+  --leaf-soft: #fbdccd;
+  --bark: #8b6a55;
+  --unripe: #a8c66a;
+  --ripe: #f2c94c;
+  --private: #6a5a9c;
+  --private-soft: #ece6f7;
+  --danger: #9b2c2c;
+  --danger-soft: #f9dcdc;
+  --btn-bg: #3a2218;
+  --btn-fg: #ffd8bf;
+  --focus: #a0482a;
+  --shadow-rgb: 58 34 24;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-palette='limun'] {
+    --paper: #151a0e;
+    --surface: #1d2414;
+    --sunken: #10140a;
+    --line: #333d24;
+    --line-strong: #4a5734;
+    --ink: #eef2d6;
+    --ink-soft: #b9c19c;
+    --ink-faint: #9aa27e;
+    --accent: #dfe67a;
+    --accent-strong: #eef28a;
+    --accent-ink: #151a0e;
+    --leaf: #b2d675;
+    --leaf-soft: #34461c;
+    --bark: #9a8c62;
+    --unripe: #8fbd4f;
+    --ripe: #f2d94e;
+    --private: #c2b3f2;
+    --private-soft: #2c2640;
+    --danger: #f0937a;
+    --danger-soft: #3a1d14;
+    --btn-bg: #eef28a;
+    --btn-fg: #151a0e;
+    --focus: #eef28a;
+    --shadow-rgb: 0 0 0;
+  }
+
+  [data-palette='mint'] {
+    --paper: #0f1a16;
+    --surface: #15241e;
+    --sunken: #0b1310;
+    --line: #26392f;
+    --line-strong: #3a5446;
+    --ink: #e3f5ec;
+    --ink-soft: #a7c7b8;
+    --ink-faint: #8aab9c;
+    --accent: #9fe6c3;
+    --accent-strong: #bdf0d8;
+    --accent-ink: #0f1a16;
+    --leaf: #84d6ad;
+    --leaf-soft: #1f3a2d;
+    --bark: #7d8b6c;
+    --unripe: #6fb784;
+    --ripe: #eed54c;
+    --private: #b8b4f0;
+    --private-soft: #26243f;
+    --danger: #f0937a;
+    --danger-soft: #3a1d14;
+    --btn-bg: #bdf0d8;
+    --btn-fg: #0f1a16;
+    --focus: #bdf0d8;
+    --shadow-rgb: 0 0 0;
+  }
+
+  [data-palette='breskva'] {
+    --paper: #1c120e;
+    --surface: #251813;
+    --sunken: #140c09;
+    --line: #3d2a21;
+    --line-strong: #5a4033;
+    --ink: #fbeee6;
+    --ink-soft: #d4b8aa;
+    --ink-faint: #b89c8f;
+    --accent: #ffcfb0;
+    --accent-strong: #ffd8bf;
+    --accent-ink: #1c120e;
+    --leaf: #f2a07f;
+    --leaf-soft: #44261a;
+    --bark: #9a7a62;
+    --unripe: #9cbf62;
+    --ripe: #f2c94c;
+    --private: #c2b3f2;
+    --private-soft: #2c2640;
+    --danger: #f39a8a;
+    --danger-soft: #3a1414;
+    --btn-bg: #ffd8bf;
+    --btn-fg: #1c120e;
+    --focus: #ffd8bf;
+    --shadow-rgb: 0 0 0;
+  }
+}

@@ -10,6 +10,7 @@
 !.yarn/releases
 !.yarn/versions
 supabase/
+*.local.sql
 
 # testing
 /coverage

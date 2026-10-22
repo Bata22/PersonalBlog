@@ -12,6 +12,7 @@ import { invalidate } from '@/lib/invalidate'
 import { fail, ok, zodFieldErrors, type ActionResult } from '@/lib/result'
 import { getJournalBranchId, getJournalDates, getJournalEntry } from './queries'
 import { streakBefore } from './streak'
+import { syncJournalBranchEntries } from './branch-entries'
 
 const journalSchema = journalMetaSchema.extend({
   occurredOn: z.string().refine(isIsoDate, 'Neispravan datum.'),
@@ -21,7 +22,9 @@ const journalSchema = journalMetaSchema.extend({
 export type JournalInput = z.input<typeof journalSchema>
 
 /** Upis ili izmena dnevnika za jedan dan (jedan upis po danu). */
-export async function saveJournal(input: JournalInput): Promise<ActionResult<{ xp: number; streak: number }>> {
+export async function saveJournal(
+  input: JournalInput,
+): Promise<ActionResult<{ xp: number; branchXp: number; streak: number }>> {
   const owner = await ownerOrNull()
   if (!owner) return fail(t.errors.forbidden)
   const parsed = journalSchema.safeParse(input)
@@ -48,15 +51,19 @@ export async function saveJournal(input: JournalInput): Promise<ActionResult<{ x
         occurredOn,
         isPublic,
         content: null,
-        metadata,
+        metadata: { ...metadata, notes: Object.fromEntries(Object.entries(metadata.notes).filter(([id]) => metadata.workedOn.includes(id))) },
         videoUrls: [],
         mediaIds: [],
       },
       { streakDays, slugBase: `dnevnik-${occurredOn}` },
     )
 
-    invalidate(...entryTags([result.slug]))
-    return ok({ xp: result.xp, streak: streakDays + 1 })
+    // svaka označena grana dobija svoj upis za taj dan
+    const notes = Object.fromEntries(Object.entries(metadata.notes).filter(([id]) => metadata.workedOn.includes(id)))
+    const branches = await syncJournalBranchEntries(owner, { day: occurredOn, isPublic, meta: { ...metadata, notes } })
+
+    invalidate(...entryTags([result.slug, ...branches.slugs]))
+    return ok({ xp: result.xp, branchXp: branches.xp, streak: streakDays + 1 })
   } catch (error) {
     return fail(userMessage(error, 'saveJournal'))
   }

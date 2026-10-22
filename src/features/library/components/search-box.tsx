@@ -13,10 +13,12 @@ type Props<T> = {
   emptyText: string
   renderItem: (item: T) => ReactNode
   getKey: (item: T) => string
+  /** Od koliko slova kreće pretraga (MAL traži bar 3). */
+  minLength?: number
 }
 
-/** Pretraga sa kašnjenjem dok kucaš (zajednička za knjige i igre). */
-export function SearchBox<T>({ endpoint, label, placeholder, emptyText, renderItem, getKey }: Props<T>) {
+/** Pretraga sa kašnjenjem dok kucaš (zajednička za knjige, igre i anime). */
+export function SearchBox<T>({ endpoint, label, placeholder, emptyText, renderItem, getKey, minLength = 2 }: Props<T>) {
   const id = useId()
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<T[] | null>(null)
@@ -25,7 +27,7 @@ export function SearchBox<T>({ endpoint, label, placeholder, emptyText, renderIt
 
   useEffect(() => {
     const q = query.trim()
-    if (q.length < 2) return
+    if (q.length < minLength) return
     const controller = new AbortController()
     const timer = setTimeout(async () => {
       setLoading(true)
@@ -45,9 +47,9 @@ export function SearchBox<T>({ endpoint, label, placeholder, emptyText, renderIt
       clearTimeout(timer)
       controller.abort()
     }
-  }, [query, endpoint])
+  }, [query, endpoint, minLength])
 
-  const visible = query.trim().length >= 2 ? results : null
+  const visible = query.trim().length >= minLength ? results : null
 
   return (
     <div className="grid gap-3">

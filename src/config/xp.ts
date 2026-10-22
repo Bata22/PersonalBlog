@@ -16,6 +16,8 @@ export const XP_RULES = {
     journal: 15,
     milestone: 0,
   },
+  /** Grana označena u dnevniku ("Na čemu sam radio?") dobija svoj upis sa ovoliko XP-a. */
+  journalBranch: 10,
   images: { every: 1, xp: 2, max: 10 },
   videos: { every: 1, xp: 5, max: 15 },
   /** Duži tekst = više XP-a (broje se reči u tekstu upisa). */
@@ -35,6 +37,8 @@ export const XP_RULES = {
     bookFinished: 100,
     gameFinished: 60,
     animeCompleted: 25,
+    /** Svaka sačuvana izmena anime-a na MAL-u iz portala (status, epizode, ocena). */
+    animeUpdate: 5,
     /** Prvi uvoz sa MyAnimeList-a: XP po već odgledanom anime-u. */
     animeImportPerItem: 5,
     animeImportMax: 500,

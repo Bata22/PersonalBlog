@@ -29,17 +29,33 @@ export function JournalForm({ initial, branches, streakBefore, existing }: Props
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [values, setValues] = useState(initial)
+  const [openNotes, setOpenNotes] = useState<string[]>([])
   const [message, setMessage] = useState<{ tone: 'error' | 'success'; text: string } | null>(null)
   const set = (patch: Partial<typeof values>) => setValues((v) => ({ ...v, ...patch }))
 
-  const breakdown = calculateXp({
+  const journalXp = calculateXp({
     kind: 'journal',
-    metadata: { did: values.did, workedOn: values.workedOn, rested: values.rested, restNote: values.restNote },
+    metadata: { did: values.did, workedOn: values.workedOn, notes: {}, rested: values.rested, restNote: values.restNote },
     words: countWords(`${values.did} ${values.restNote}`),
     images: 0,
     videos: 0,
     streakDays: streakBefore,
   })
+  // svaka označena grana dobija svoj upis (osnova + bonus za tekst beleške)
+  const selected = branches.filter((b) => values.workedOn.includes(b.id))
+  const branchXpFor = (branchId: string) =>
+    calculateXp({
+      kind: 'post',
+      metadata: { fromJournal: values.occurredOn },
+      words: countWords(values.notes[branchId] ?? ''),
+      images: 0,
+      videos: 0,
+    }).total
+  const branchXp = selected.reduce((sum, b) => sum + branchXpFor(b.id), 0)
+  const breakdown = {
+    total: journalXp.total + branchXp,
+    lines: [...journalXp.lines, ...(branchXp > 0 ? [{ label: t.journal.branchesXp(selected.length), xp: branchXp }] : [])],
+  }
 
   function toggleBranch(branchId: string) {
     set({
@@ -55,7 +71,7 @@ export function JournalForm({ initial, branches, streakBefore, existing }: Props
     startTransition(async () => {
       const result = await saveJournal({ ...values, restNote: values.restNote || undefined })
       if (!result.ok) return setMessage({ tone: 'error', text: result.error })
-      setMessage({ tone: 'success', text: `${t.common.saved}: +${result.data.xp} XP` })
+      setMessage({ tone: 'success', text: t.journal.savedXp(result.data.xp + result.data.branchXp, selected.length) })
       router.refresh()
     })
   }
@@ -104,6 +120,46 @@ export function JournalForm({ initial, branches, streakBefore, existing }: Props
             )
           })}
         </div>
+        {selected.length > 0 ? (
+          <div className="mt-4 grid gap-2">
+            <p className="text-sm text-ink-soft">{t.journal.notesHint}</p>
+            <ul className="grid gap-2">
+              {selected.map((branch) => {
+                const note = values.notes[branch.id] ?? ''
+                const open = openNotes.includes(branch.id) || note !== ''
+                return (
+                  <li key={branch.id} className="rounded-2xl border border-line bg-surface px-3.5 py-2.5">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                      <span className="font-semibold">
+                        <span aria-hidden>{branch.icon}</span> {branch.name}
+                      </span>
+                      <span className="text-sm font-semibold text-leaf tabular-nums">+{branchXpFor(branch.id)} XP</span>
+                      {open ? null : (
+                        <button
+                          type="button"
+                          onClick={() => setOpenNotes((ids) => [...ids, branch.id])}
+                          className="ml-auto text-sm font-semibold text-leaf hover:underline"
+                        >
+                          {t.journal.addNote}
+                        </button>
+                      )}
+                    </div>
+                    {open ? (
+                      <Textarea
+                        aria-label={t.journal.noteFor(branch.name)}
+                        value={note}
+                        onChange={(e) => set({ notes: { ...values.notes, [branch.id]: e.target.value } })}
+                        placeholder={t.journal.notePlaceholder}
+                        maxLength={1000}
+                        className="mt-2 min-h-16"
+                      />
+                    ) : null}
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        ) : null}
       </fieldset>
 
       <div className="grid gap-3 rounded-2xl border border-line bg-surface p-4">

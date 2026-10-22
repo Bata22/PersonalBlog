@@ -44,10 +44,11 @@ U `.env.example` uz svaku promenljivu piše odakle se uzima. Ukratko:
 |---|---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase → dugme **Connect** ili **Project Settings → API Keys** (<https://supabase.com/dashboard/project/_/settings/api-keys>) | da |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | ista stranica, ključ koji počinje sa `sb_publishable_` | da |
-| `SUPABASE_SECRET_KEY` | ista stranica → *Secret keys* → *Create new secret key* (`sb_secret_…`). Koristi ga samo podsetnik, samo na serveru | za podsetnik |
+| `SUPABASE_SECRET_KEY` | ista stranica → *Secret keys* → *Create new secret key* (`sb_secret_…`). Koriste ga samo podsetnik i MAL nalog, samo na serveru | za podsetnik i MAL |
 | `NEXT_PUBLIC_SITE_URL` | ostavi prazno dok nemaš svoj domen | ne |
 | `RAWG_API_KEY` | <https://rawg.io/apidocs> → *Get API Key* | za igre |
 | `MAL_CLIENT_ID` | <https://myanimelist.net/apiconfig> → *Create ID* (App Type: web) | za anime |
+| `MAL_CLIENT_SECRET` | ista stranica, Client Secret | za izmene MAL liste iz portala |
 | `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` | `npm run vapid` (prvi red javni, drugi privatni) | za podsetnik |
 | `VAPID_SUBJECT` | `mailto:` + tvoj email | za podsetnik |
 | `CRON_SECRET` | `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` | za podsetnik |
@@ -91,7 +92,12 @@ Svaki sledeći `git push` na `main` automatski objavljuje novu verziju. GitHub A
 ### 6. Igre i anime
 
 - **Igre**: sa `RAWG_API_KEY` pretraga u **Igre** nalazi igru po delu imena. RAWG traži da se navede izvor, pa je ispod liste igara link „Podaci o igrama: RAWG".
-- **Anime**: u **Podešavanjima** upiši MyAnimeList korisničko ime (lista mora da bude javna), pa u **Anime** klikni **Uvezi sa MAL-a**. Prvi uvoz donosi zbirni XP za već odgledano, a kasnije svaki novi završeni anime donosi XP posebno.
+- **Anime**: u **Podešavanjima** upiši MyAnimeList korisničko ime (lista mora da bude javna), pa u **Anime** klikni **Osveži sa MyAnimeList-a**. Prvi uvoz donosi zbirni XP za već odgledano, a kasnije svaki novi završeni anime donosi XP posebno.
+- **Izmene MAL liste iz portala** (status, epizode, ocena; svaka sačuvana izmena +5 XP):
+  1. U SQL Editoru pokreni `supabase/migrations/20261008170000_mal_nalog.sql`.
+  2. Na <https://myanimelist.net/apiconfig> u svom app-u: *App Redirect URL* = `https://<tvoj-sajt>/api/admin/mal/povratak`; kopiraj **Client Secret**.
+  3. Dodaj `MAL_CLIENT_SECRET` u `.env.local` i na Vercel (uz `SUPABASE_SECRET_KEY`), pa Redeploy.
+  4. U **Anime** klikni **Poveži MyAnimeList nalog** i odobri pristup. Posle toga u **Anime → Dodaj anime** tražiš i dodaješ nove (gledam, odgledao, planiram…), a na stranici svakog anime-a menjaš status, epizode i ocenu.
 
 ---
 
@@ -101,7 +107,7 @@ Svaki sledeći `git push` na `main` automatski objavljuje novu verziju. GitHub A
 - **Vidljivost** se menja i kasnije, jednim dugmetom na upisu, knjizi, igri ili anime-u. Slike se tada same premeste između privatnog i javnog skladišta.
 - **Slike** se na telefonu smanje (najviše 1920 px, WebP) pre slanja. Privatne slike se prikazuju samo tebi, preko privremenih potpisanih linkova.
 - **Video**: okači snimak na YouTube (može kao *unlisted*) i nalepi link; na stranici se učitava tek na klik.
-- **Dnevnik**: jedan upis po danu; svaki dan zaredom donosi bonus XP.
+- **Dnevnik**: jedan upis po danu; svaki dan zaredom donosi bonus XP. Svaka grana označena u „Na čemu sam radio?" dobija svoj upis za taj dan i XP, pa ništa ne pišeš dva puta (beleška po grani nije obavezna; slike i video dodaješ posle u tom upisu).
 - **Knjige**: pretraga preko Open Library, status (čitam, pročitano…), ocena, utisak i beleške po poglavljima. Kad knjigu označiš kao pročitanu, dobija se dostignuće.
 - **Grane**: dodaj, preimenuj, premesti ili obriši (brisanje je moguće samo ako grana nema upise). Svaka grana ima belešku „gde sam stao".
 - **Paleta**: **Podešavanja → Paleta** menja izgled na tom uređaju; za sve posetioce se menja u `src/config/theme.ts`.

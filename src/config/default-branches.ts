@@ -35,6 +35,18 @@ export const DEFAULT_BRANCHES: SeedBranch[] = [
     ],
   },
   {
+    slug: 'fakultet',
+    name: 'Fakultet',
+    icon: '🏛️',
+    attribute: 'intelekt',
+    kind: 'post',
+    description: 'Asistentski posao: vežbe, priprema, kolokvijumi, ispiti.',
+    children: [
+      { slug: 'vezbe-arhitektura', name: 'Arhitektura računara', icon: '🖥️' },
+      { slug: 'vezbe-baze', name: 'Baze podataka', icon: '🗄️' },
+    ],
+  },
+  {
     slug: 'projekti',
     name: 'Projekti',
     icon: '🛠️',

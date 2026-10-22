@@ -35,7 +35,8 @@ export function calculateXp(input: XpInput): XpBreakdown {
     if (xp > 0) lines.push({ label, xp })
   }
 
-  add(t.xp.lines.base, XP_RULES.base[input.kind])
+  const fromJournal = input.kind === 'post' && Boolean(input.metadata.fromJournal)
+  add(t.xp.lines.base, fromJournal ? XP_RULES.journalBranch : XP_RULES.base[input.kind])
   add(t.xp.lines.words, stepBonus(input.words, XP_RULES.words))
   add(t.xp.lines.images, stepBonus(input.images, XP_RULES.images))
   add(t.xp.lines.videos, stepBonus(input.videos, XP_RULES.videos))

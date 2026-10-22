@@ -43,7 +43,7 @@ export function ogImage({ eyebrow, title, footer }: { eyebrow?: string; title: s
           backgroundImage: `radial-gradient(circle at 1px 1px, #dde3b6 1.5px, transparent 0)`,
           backgroundSize: '28px 28px',
           padding: '64px 72px',
-          fontFamily: 'Onest',
+          fontFamily: 'Onest, OnestExt',
           color: COLORS.ink,
           position: 'relative',
         }}
@@ -91,10 +91,10 @@ export function ogImage({ eyebrow, title, footer }: { eyebrow?: string; title: s
                 {eyebrow}
               </div>
             ) : null}
-            <div style={{ fontFamily: 'Bricolage', fontSize: titleSize, lineHeight: 1.05, letterSpacing: '-0.02em' }}>{title}</div>
+            <div style={{ fontFamily: 'Bricolage, BricolageExt', fontSize: titleSize, lineHeight: 1.05, letterSpacing: '-0.02em' }}>{title}</div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 20, fontSize: 30, color: COLORS.inkSoft }}>
-            <span style={{ fontFamily: 'Bricolage', color: COLORS.ink }}>{siteConfig.name}</span>
+            <span style={{ fontFamily: 'Bricolage, BricolageExt', color: COLORS.ink }}>{siteConfig.name}</span>
             {footer ? <span style={{ color: COLORS.leaf }}>{footer}</span> : null}
           </div>
         </div>
@@ -104,9 +104,10 @@ export function ogImage({ eyebrow, title, footer }: { eyebrow?: string; title: s
       ...OG_SIZE,
       fonts: [
         { name: 'Bricolage', data: display, weight: 800, style: 'normal' },
-        { name: 'Bricolage', data: displayExt, weight: 800, style: 'normal' },
+        // latin-ext (č, ć, š, ž, đ) pod posebnim imenom, kao rezerva u font-family
+        { name: 'BricolageExt', data: displayExt, weight: 800, style: 'normal' },
         { name: 'Onest', data: body, weight: 500, style: 'normal' },
-        { name: 'Onest', data: bodyExt, weight: 500, style: 'normal' },
+        { name: 'OnestExt', data: bodyExt, weight: 500, style: 'normal' },
       ],
     },
   )

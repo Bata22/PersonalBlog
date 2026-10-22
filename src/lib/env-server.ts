@@ -12,5 +12,7 @@ export function serverEnv() {
     cronSecret: process.env.CRON_SECRET ?? '',
     rawgApiKey: process.env.RAWG_API_KEY ?? '',
     malClientId: process.env.MAL_CLIENT_ID ?? '',
+    /** Treba samo za izmene liste iz portala (povezivanje naloga). */
+    malClientSecret: process.env.MAL_CLIENT_SECRET ?? '',
   }
 }

@@ -352,6 +352,29 @@ export type Database = {
         Update: Partial<Omit<Database['public']['Tables']['anime']['Insert'], 'id' | 'owner_id'>>
         Relationships: []
       }
+      mal_tokens: {
+        Row: {
+          owner_id: string
+          access_token: string
+          refresh_token: string
+          expires_at: string
+          updated_at: string
+        }
+        Insert: {
+          owner_id: string
+          access_token: string
+          refresh_token: string
+          expires_at: string
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string
+          refresh_token?: string
+          expires_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       push_subscriptions: {
         Row: {
           id: string

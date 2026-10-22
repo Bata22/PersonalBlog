@@ -13,6 +13,10 @@ export const postMetaSchema = z.object({
   chapter: z.string().trim().max(120).optional(),
   /** Za "Slušam": link ka pesmi ili albumu. */
   link: z.url({ protocol: /^https?$/ }).max(500).optional(),
+  /** Upis napravljen iz dnevnika za taj dan (YYYY-MM-DD). */
+  fromJournal: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  /** Beleška iz dnevnika od koje je upis nastao (da se ne pregazi ručna izmena). */
+  journalNote: z.string().max(1000).optional(),
 })
 
 export const placeMetaSchema = z.object({
@@ -51,15 +55,17 @@ export const practiceMetaSchema = z.object({
 export const journalMetaSchema = z.object({
   /** Šta sam danas radio. */
   did: z.string().trim().max(4000).default(''),
-  /** Na čemu sam radio — id-jevi grana. */
+  /** Na čemu sam radio — id-jevi grana. Svaka dobija svoj upis i XP. */
   workedOn: z.array(z.uuid()).max(30).default([]),
+  /** Kratko šta sam radio u kojoj grani (id grane → tekst), nije obavezno. */
+  notes: z.record(z.uuid(), z.string().trim().max(1000)).default({}),
   /** Da li sam odmarao. */
   rested: z.boolean().default(false),
   restNote: z.string().trim().max(500).optional(),
 })
 
 export const milestoneMetaSchema = z.object({
-  event: z.enum(['book_finished', 'game_finished', 'anime_completed', 'anime_import']),
+  event: z.enum(['book_finished', 'game_finished', 'anime_completed', 'anime_import', 'anime_update']),
   count: z.number().int().min(0).optional(),
 })
 

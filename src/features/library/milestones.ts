@@ -2,12 +2,16 @@ import 'server-only'
 import type { Viewer } from '@/features/auth/session'
 import { slugify, uniqueSlug } from '@/lib/slug'
 
-type MilestoneEvent = 'book_finished' | 'game_finished' | 'anime_completed' | 'anime_import'
+type MilestoneEvent = 'book_finished' | 'game_finished' | 'anime_completed' | 'anime_import' | 'anime_update'
+
+/** Događaji koji smeju da se ponove za isti predmet (svaka izmena donosi XP). */
+const REPEATABLE = new Set<MilestoneEvent>(['anime_update'])
 type Subject = { book_id: string } | { game_id: string } | { anime_id: string }
 
 /**
  * Dostignuće ("Pročitao: Dina", "Prešao: Elden Ring") — poseban upis koji
- * nosi XP iz XP_RULES.milestones. Za isti predmet i događaj pravi se samo jednom.
+ * nosi XP iz XP_RULES.milestones. Za isti predmet i događaj pravi se samo jednom,
+ * osim za događaje iz REPEATABLE.
  */
 export async function createMilestone(
   owner: Viewer,
@@ -26,7 +30,7 @@ export async function createMilestone(
   const { data: branch } = await supabase.from('branches').select('id').eq('role', params.role).maybeSingle()
   if (!branch) return null
 
-  if (params.subject) {
+  if (params.subject && !REPEATABLE.has(params.event)) {
     const [column, id] = Object.entries(params.subject)[0] as [keyof Subject & string, string]
     const { count } = await supabase
       .from('entries')

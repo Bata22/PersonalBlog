@@ -82,6 +82,7 @@ async function Journal({ searchParams }: Pick<PageProps<'/admin/dnevnik'>, 'sear
             isPublic: entry?.is_public ?? false,
             did: meta?.did ?? '',
             workedOn: meta?.workedOn ?? [],
+            notes: meta?.notes ?? {},
             rested: meta?.rested ?? false,
             restNote: meta?.restNote ?? '',
           }}

@@ -4,7 +4,11 @@ import { Suspense } from 'react'
 import { ExternalLink } from 'lucide-react'
 import { LinkButton } from '@/components/ui/button'
 import { AdminSkeleton } from '@/features/admin/components'
+import { MalConnectLink } from '@/features/anime/components/mal-connection'
+import { MalEditor } from '@/features/anime/components/mal-editor'
+import { isMalConnected } from '@/features/anime/mal-auth'
 import { getOwnerAnimeById } from '@/features/anime/queries'
+import { Panel } from '@/components/ui/misc'
 import { requireOwner } from '@/features/auth/session'
 import { LibraryHeader } from '@/features/library/components/library-header'
 import { LibraryNotesSection } from '@/features/library/components/library-notes-section'
@@ -22,12 +26,13 @@ export default function AdminAnimeDetailPage({ params }: PageProps<'/admin/anime
 }
 
 async function AdminAnime({ params }: Pick<PageProps<'/admin/anime/[id]'>, 'params'>) {
-  const { supabase } = await requireOwner()
+  const { supabase, userId } = await requireOwner()
   const { id } = await params
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound()
-  const [anime, branch] = await Promise.all([
+  const [anime, branch, connected] = await Promise.all([
     getOwnerAnimeById(supabase, id),
     supabase.from('branches').select('id').eq('role', 'anime').maybeSingle(),
+    isMalConnected(userId),
   ])
   if (!anime) notFound()
 
@@ -54,6 +59,25 @@ async function AdminAnime({ params }: Pick<PageProps<'/admin/anime/[id]'>, 'para
           </>
         }
       />
+      {anime.mal_id !== null ? (
+        <Panel className="grid gap-4">
+          <h2 className="text-xl font-bold">{t.anime.editTitle}</h2>
+          {connected ? (
+            <MalEditor
+              animeId={anime.id}
+              status={anime.status}
+              score={anime.score}
+              episodesWatched={anime.episodes_watched}
+              episodesTotal={anime.episodes_total}
+            />
+          ) : (
+            <div className="grid justify-items-start gap-3">
+              <p className="text-ink-soft">{t.anime.malConnectHint}</p>
+              <MalConnectLink />
+            </div>
+          )}
+        </Panel>
+      ) : null}
       <LibraryNotesSection
         supabase={supabase}
         subject={{ column: 'anime_id', id: anime.id }}

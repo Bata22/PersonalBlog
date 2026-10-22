@@ -35,7 +35,7 @@ describe('XP', () => {
   it('dnevnik nagrađuje niz dana', () => {
     const result = calculateXp({
       kind: 'journal',
-      metadata: { did: 'radio', workedOn: [], rested: true },
+      metadata: { did: 'radio', workedOn: [], notes: {}, rested: true },
       words: 1,
       images: 0,
       videos: 0,
@@ -47,5 +47,10 @@ describe('XP', () => {
   it('broji reči', () => {
     expect(countWords('  jedan  dva\ntri ')).toBe(3)
     expect(countWords('')).toBe(0)
+  })
+
+  it('grana iz dnevnika dobija svoju osnovu umesto osnove za objavu', () => {
+    const result = calculateXp({ kind: 'post', metadata: { fromJournal: '2026-10-08' }, words: 0, images: 0, videos: 0 })
+    expect(result.total).toBe(XP_RULES.journalBranch)
   })
 })

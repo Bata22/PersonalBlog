@@ -17,7 +17,7 @@ const ICON_IDEAS = ['🌱', '🎓', '🛠️', '📚', '🎵', '💪', '⛰️',
 type Props = {
   initial: BranchInput
   /** Moguće roditeljske grane (bez ove grane i njenih podgrana). */
-    parents: { id: string; label: string; attribute: AttributeId | null }[]
+  parents: { id: string; label: string; attribute: AttributeId | null }[]
   /** Posebne grane (dnevnik, biblioteka) ne menjaju vrstu upisa. */
   special?: boolean
 }
@@ -31,7 +31,7 @@ export function BranchForm({ initial, parents, special }: Props) {
   const [message, setMessage] = useState<{ tone: 'error' | 'success'; text: string } | null>(null)
   const set = (patch: Partial<BranchInput>) => setValues((v) => ({ ...v, ...patch }))
   const isEdit = Boolean(values.id)
-  
+
   // Prazan atribut: podgrana preuzima atribut roditelja, glavna grana ga nema.
   const parent = parents.find((p) => p.id === values.parentId)
   const inheritLabel = !parent
@@ -104,7 +104,7 @@ export function BranchForm({ initial, parents, special }: Props) {
       </Field>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field id={`${id}-parent`} label={t.branches.parent} error={errors.parentId}>
+        <Field id={`${id}-parent`} label={t.branches.parent} hint={t.branches.parentHint} error={errors.parentId}>
           <Select id={`${id}-parent`} value={values.parentId ?? ''} onChange={(e) => set({ parentId: e.target.value || null })}>
             <option value="">{t.branches.noParent}</option>
             {parents.map((p) => (
